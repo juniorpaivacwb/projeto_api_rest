@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head><title>Lista de Tarefas</title></head>
+<body>
+    <h1>Tarefas</h1>
+    <input type="text" id="tarefa">
+    <button onclick="adicionar()">Adicionar</button>
+    <ul id="lista"></ul>
+
+    <script>
+        const endpoint = "https://tarefas-api-hr4i.onrender.com/tarefas";
+
+        function carregar() {
+            fetch(endpoint)
+                .then(r => r.json())
+                .then(data => {
+                    const ul = document.getElementById("lista");
+                    ul.innerHTML = "";
+                    data.forEach(tarefa => {
+                        const li = document.createElement("li");
+                        li.textContent = tarefa;
+                        ul.appendChild(li);
+                    });
+                });
+        }
+
+        function adicionar() {
+            const tarefa = document.getElementById("tarefa").value;
+            fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ tarefa })
+            }).then(() => carregar());
+        }
+
+        carregar();
+    
+function computeEndpoint(){
+  try {
+    const isFile = typeof location !== 'undefined' && (location.origin === 'null' || location.protocol === 'file:');
+    const host = (typeof location !== 'undefined' && location.hostname) ? location.hostname : '';
+    const isLocalHost = host === 'localhost' || host === '127.0.0.1';
+    if (isFile || isLocalHost) {
+      return "http://localhost:8000/tarefas";
+    }
+  } catch(e) {}
+  return "https://back-end-otq3.onrender.com/tarefas";
+}
+
+</script>
+</body>
+</html>
